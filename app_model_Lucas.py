@@ -44,10 +44,10 @@ async def  consulta():
 async def predict(features: Features):
     data_predict = np.array([[features.TV, features.radio, features.newspaper]])
     prediction = model.predict(data_predict)
-    return {"predicted_sales": float(prediction[0])}
+    return {"prediction": float(prediction[0])}
 
 @app.post("/ingest/")
-async def predict(features: TrainingData):
+async def ingest(features: TrainingData):
     conn = sqlite3.connect('data/prediccion_ventas.db')
     cursor = conn.cursor()
     cursor.execute('''
@@ -57,8 +57,7 @@ async def predict(features: TrainingData):
     conn.commit()
     conn.close()
 
-    return {"message": "Datos subidos correctamente"}
-
+    return {'message': 'Datos ingresados correctamente'}
 
 @app.get("/retrain/")
 async def retrain():
@@ -77,7 +76,7 @@ async def retrain():
     model.fit(X_scaled, y)
     with open("data/advertising_model.pkl", "wb") as f:
         pickle.dump(model, f)
-    return {"message": "Modelo reentrenado y guardado correctamente"}
+    return {'message': 'Modelo reentrenado correctamente.'}
 
 
 if __name__ == "__main__":
