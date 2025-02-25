@@ -61,18 +61,6 @@ Puedes interactuar con la API utilizando **Postman** siguiendo estos pasos:
 - **Método:** `GET`
 - **URL:** `http://localhost:8000/retrain`
 
-## 🐳 Subir la Imagen a Docker Hub
-Si quieres compartir la imagen en **Docker Hub**, sigue estos pasos:
-```bash
-docker login
-docker tag fastapi_app tu-usuario/fastapi_app:latest
-docker push tu-usuario/fastapi_app:latest
-```
-Luego, en otra máquina, puedes ejecutar:
-```bash
-docker pull tu-usuario/fastapi_app:latest
-docker run -p 8000:8000 tu-usuario/fastapi_app
-```
 
 ## 🧪 Testeo de la API
 Para probar los endpoints de la API, puedes ejecutar los tests desde una terminal, navegar al directorio donde se encuentra el archivo test_api.py. Luego ejecuta el siguiente comando:
