@@ -6,8 +6,8 @@ Este repositorio contiene una API creada con **FastAPI** para predecir ventas en
 
 ### 1️⃣ Clonar el Repositorio
 ```bash
-git clone https://github.com/tu-usuario/tu-repositorio.git
-cd tu-repositorio
+git clone https://github.com/LucasQuintoDiario/API_Advertising.git
+cd API_Advertising
 ```
 
 ### 2️⃣ Configurar y Construir la Imagen con Docker
@@ -26,7 +26,7 @@ Puedes interactuar con la API utilizando **Postman** siguiendo estos pasos:
 
 #### 🔹 Predecir ventas
 - **Método:** `POST`
-- **URL:** `http://localhost:8000/predict/`
+- **URL:** `http://localhost:8000/predict`
 - **Body (JSON):**
   ```json
   {
@@ -40,11 +40,11 @@ Puedes interactuar con la API utilizando **Postman** siguiendo estos pasos:
 
 #### 🔹 Consultar datos almacenados
 - **Método:** `GET`
-- **URL:** `http://localhost:8000/consult/`
+- **URL:** `http://localhost:8000/consult`
 
 #### 🔹 Ingresar nuevos datos
 - **Método:** `POST`
-- **URL:** `http://localhost:8000/ingest/`
+- **URL:** `http://localhost:8000/ingest`
 - **Body (JSON):**
   ```json
   {
@@ -59,7 +59,7 @@ Puedes interactuar con la API utilizando **Postman** siguiendo estos pasos:
 
 #### 🔹 Reentrenar el modelo
 - **Método:** `GET`
-- **URL:** `http://localhost:8000/retrain/`
+- **URL:** `http://localhost:8000/retrain`
 
 ## 🐳 Subir la Imagen a Docker Hub
 Si quieres compartir la imagen en **Docker Hub**, sigue estos pasos:
@@ -75,33 +75,12 @@ docker run -p 8000:8000 tu-usuario/fastapi_app
 ```
 
 ## 🧪 Testeo de la API
-Para probar los endpoints de la API, puedes utilizar el siguiente código en Python:
+Para probar los endpoints de la API, puedes ejecutar los tests desde una terminal, navegar al directorio donde se encuentra el archivo test_api.py. Luego ejecuta el siguiente comando:
 
-```python
-import requests
+```bash
+pytest test_api.py
 
-def test_ingest_endpoint():
-    url = 'http://127.0.0.1:8000/ingest'  
-    data = {'TV': 100.0, 'radio': 100.0, 'newspaper': 200.0, 'sales': 3000.0}
-    response = requests.post(url, json=data)
-    assert response.status_code == 200
-    assert response.json() == {'message': 'Datos ingresados correctamente'}
-
-def test_predict_endpoint():
-    url = 'http://127.0.0.1:8000/predict'  
-    data = {'TV': 100.0, 'radio': 100.0, 'newspaper': 200.0}
-    response = requests.post(url, json=data)
-    assert response.status_code == 200
-    assert 'prediction' in response.json()
-
-def test_retrain_endpoint():
-    url = 'http://127.0.0.1:8000/retrain'  
-    response = requests.get(url)
-    assert response.status_code == 200
-    assert response.json() == {'message': 'Modelo reentrenado correctamente.'}
 ```
-
-Ejecuta este código en un entorno Python para verificar el correcto funcionamiento de la API.
 
 ## 📜 Licencia
 Este proyecto está bajo la licencia **MIT**. ¡Siéntete libre de contribuir y mejorar! 🚀
