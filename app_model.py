@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
+from fastapi.responses import HTMLResponse
 import numpy as np
 import sqlite3
 import uvicorn
@@ -13,20 +13,39 @@ with open("data/advertising_model.pkl", "rb") as f:
 
 app = FastAPI()
 
-class Features(BaseModel):
-    TV: float
-    radio: float
-    newspaper: float
 
-class TrainingData(BaseModel):
-    TV: float
-    radio: float
-    newspaper: float
-    sales: float
-
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 async def hello():
-    return {"message": "Calcula ventas con datos de otras cosas, Salu2"}
+    return """
+    <html>
+        <head>
+            <title>API de Predicción de Ventas</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }
+                h1 { color: #007BFF; }
+                p { font-size: 18px; color: #333; }
+                .container { max-width: 600px; margin: auto; padding: 20px; border-radius: 10px; 
+                             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); background-color: #f9f9f9; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>API de Predicción de Ventas</h1>
+                <p>🚀 Calcula las ventas en base a la inversión en:</p>
+                <ul>
+                    <li><b>📺 TV</b></li>
+                    <li><b>📻 Radio</b></li>
+                    <li><b>📰 Periódicos</b></li>
+                </ul>
+                <p>📊 Consulta los datos almacenados en la base de datos.</p>
+                <p>📝 Introduce nuevos datos.</p>
+                <p>🔄 Reentrena el modelo con los datos añadidos.</p>
+                <p><b>💡 Usa la documentación interactiva en <a href='/docs' target='_blank'>/docs</a></b></p>
+            </div>
+        </body>
+    </html>
+    """
+
 
 @app.get("/consult/")
 async def  consulta():
@@ -41,25 +60,31 @@ async def  consulta():
 
 
 @app.post("/predict/")
-async def predict(features: Features):
-    data_predict = np.array([[features.TV, features.radio, features.newspaper]])
-    prediction = model.predict(data_predict)
-    return {"prediction": float(prediction[0])}
+async def predict(data:dict):
+    try:
+        data_predict = data.get('data')
+        prediction = model.predict(data_predict).tolist()
+        return {"prediction": prediction}
+    except Exception as e:
+        return {"error": str(e)}
+
+
 
 @app.post("/ingest/")
-async def ingest(features: TrainingData):
+async def ingest(data:dict):
+    data_ingest = data.get("data")
     conn = sqlite3.connect('data/prediccion_ventas.db')
     cursor = conn.cursor()
-    cursor.execute('''
+    cursor.executemany('''
         INSERT INTO Advertising (TV, Radio, Newspaper, Sales)
         VALUES (?, ?, ?, ?)
-    ''', (features.TV, features.radio, features.newspaper, features.sales))
+    ''', (data_ingest))
     conn.commit()
     conn.close()
 
     return {'message': 'Datos ingresados correctamente'}
 
-@app.get("/retrain/")
+@app.post("/retrain/")
 async def retrain():
     conn = sqlite3.connect('data/prediccion_ventas.db')
     cursor = conn.cursor()
@@ -80,4 +105,4 @@ async def retrain():
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app)
