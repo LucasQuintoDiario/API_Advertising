@@ -30,9 +30,7 @@ Puedes interactuar con la API utilizando **Postman** siguiendo estos pasos:
 - **Body (JSON):**
   ```json
   {
-    "TV": 100.0,
-    "radio": 20.0,
-    "newspaper": 10.0
+    "data": [[100, 100, 200]]
   }
   ```
 - **Configura el header:**
@@ -48,10 +46,7 @@ Puedes interactuar con la API utilizando **Postman** siguiendo estos pasos:
 - **Body (JSON):**
   ```json
   {
-    "TV": 150.0,
-    "radio": 30.0,
-    "newspaper": 20.0,
-    "sales": 25.5
+  "data": [[100, 100, 200, 3000], [200, 230, 500, 4000]]
   }
   ```
 - **Headers:**
